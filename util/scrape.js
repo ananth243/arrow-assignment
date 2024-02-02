@@ -40,6 +40,7 @@ const getFunding = async (page, org) => {
       date: new Date(date),
     };
   });
+  funding = funding.sort((a, b) => b.date - a.date);
   return funding;
 };
 
