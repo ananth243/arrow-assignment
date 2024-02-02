@@ -111,7 +111,6 @@ module.exports.rotateUA = () => {
 /*
 Out of Scope
 https://scrapingant.com/proxies provides free proxies for connecting to the web.
-
 */
 module.exports.getProxyServer = async () => {
   const proxyServers = [

@@ -2,22 +2,14 @@ const { config } = require("dotenv");
 const currency = require("currency.js");
 const puppeteer = require("puppeteer-extra");
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
-const { rotateUA } = require("./common");
+const { rotateUA, getProxyServer } = require("./common");
 
 config();
 puppeteer.use(stealthPlugin());
 
-const FUNDING = (org, cache) => {
-  const url = `https://www.crunchbase.com/search/funding_rounds/field/organizations/num_funding_rounds/${org}`;
-  if (!cache) return url;
-  return `https://webcache.googleusercontent.com/search?q=cache:${url}`;
-};
-
-const EXEC = (org, cache) => {
-  const url = `https://www.crunchbase.com/organization/${org}/people`;
-  if (!cache) return url;
-  return `https://webcache.googleusercontent.com/search?q=cache:${url}`;
-};
+const FUNDING = (org) =>
+  `https://www.crunchbase.com/search/funding_rounds/field/organizations/num_funding_rounds/${org}`;
+const EXEC = (org) => `https://www.crunchbase.com/organization/${org}/people`;
 
 const getFunding = async (page, org) => {
   await page.goto(FUNDING(org), {
@@ -77,10 +69,8 @@ const getExecutives = async (page, org) => {
 module.exports.scrapeData = async (org) => {
   const browser = await puppeteer.launch({
     headless: process.env.HEADLESS || false,
-    args: process.env.PROXY ? [`proxies`] : []
   });
   const page = (await browser.pages())[0];
-  process.env.ROTATE_UA && page.setUserAgent(rotateUA());
   const funding = await getFunding(page, org);
   const execs = await getExecutives(page, org);
   await browser.close();

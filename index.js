@@ -13,7 +13,7 @@ const main = async (name) => {
       where: { name },
     });
     // Scrape data
-    let { funding, execs } = await scrapeData(name, company ? true : false);
+    let { funding, execs } = await scrapeData(name);
     if (!company) {
       company = await db.models.company.create({ name });
       if (funding)
