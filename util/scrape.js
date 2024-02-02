@@ -2,7 +2,7 @@ const { config } = require("dotenv");
 const currency = require("currency.js");
 const puppeteer = require("puppeteer-extra");
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
-const { rotateUA, getProxyServer } = require("./common");
+const { rotateUA } = require("./common");
 
 config();
 puppeteer.use(stealthPlugin());
@@ -44,23 +44,17 @@ const getFunding = async (page, org) => {
 };
 
 const getExecutives = async (page, org) => {
-  await page.goto(EXEC(org), {
-    waitUntil: "domcontentloaded",
-  });
-  return await page.evaluate(() => {
+  await page.goto(EXEC(org), { waitUntil: "domcontentloaded" });
+  return await page.evaluate(async () => {
     let arr = [];
-    try {
-      document
-        .querySelector("image-list-card")
-        .querySelectorAll("li")
-        .forEach((li) => {
-          const name = li.querySelector("a").innerText;
-          const post = li.querySelector("span").innerText;
-          arr.push({ name, post });
-        });
-    } catch (error) {
-      return null;
-    }
+    document
+      .querySelector("image-list-card")
+      .querySelectorAll("li")
+      .forEach((li) => {
+        const name = li.querySelector("a").innerText;
+        const post = li.querySelector("span").innerText;
+        arr.push({ name, post });
+      });
     if (arr.length === 0) return null;
     return arr;
   });
@@ -70,7 +64,11 @@ module.exports.scrapeData = async (org) => {
   const browser = await puppeteer.launch({
     headless: process.env.HEADLESS || false,
   });
-  const page = (await browser.pages())[0];
+  let page = (await browser.pages())[0];
+  if (process.env.HEADLESS) {
+    const userAgent = rotateUA();
+    page.setUserAgent(userAgent);
+  }
   const funding = await getFunding(page, org);
   const execs = await getExecutives(page, org);
   await browser.close();
