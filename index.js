@@ -1,6 +1,6 @@
 const { db } = require("./db/db");
-const { scrapeData } = require("./scrape");
-const {formatNumber, displayData} = require("./util.js");
+const { scrapeData } = require("./util/scrape");
+const {displayData} = require("./util/common");
 
 const company = process.argv[2];
 
@@ -43,7 +43,7 @@ const main = async (name) => {
         where: { companyId: company.id },
       });
     }
-    displayData(companyFunds, companyExecs);
+    displayData(company, companyFunds, companyExecs);
   } catch (error) {
     console.error(error);
   } finally {

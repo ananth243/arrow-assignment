@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const { config } = require("dotenv");
 const currency = require("currency.js");
+const { generateRandomUA } = require("./common");
 
 config();
 
@@ -10,6 +11,7 @@ const EXEC = (org) => `https://www.crunchbase.com/organization/${org}/people`;
 
 const getFunding = async (browser, org) => {
   const page = await browser.newPage();
+  // await page.setUserAgent(generateRandomUA());
   await page.goto(FUNDING(org), {
     waitUntil: "domcontentloaded",
   });
@@ -39,10 +41,12 @@ const getFunding = async (browser, org) => {
 
 const getExecutives = async (browser, org) => {
   const page = await browser.newPage();
+  // await page.setUserAgent(generateRandomUA());
   await page.goto(EXEC(org), {
     waitUntil: "domcontentloaded",
   });
   return await page.evaluate(() => {
+    delete navigator.__proto__.webdriver;
     let arr = [];
     document
       .querySelector("image-list-card")

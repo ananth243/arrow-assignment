@@ -23,17 +23,17 @@ db.models.company = company;
 db.models.funds = funds;
 db.models.execs = execs;
 
-db.models.company.hasMany(funds, {
+db.models.company.hasMany(db.models.funds, {
   foreignKey: "companyId",
 });
-db.models.funds.belongsTo(company, {
+db.models.funds.belongsTo(db.models.company, {
   foreignKey: "companyId",
 });
 
-db.models.company.hasMany(execs, {
+db.models.company.hasMany(db.models.execs, {
   foreignKey: "companyId",
 });
-db.models.funds.belongsTo(company, {
+db.models.funds.belongsTo(db.models.company, {
   foreignKey: "companyId",
 });
 
