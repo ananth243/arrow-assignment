@@ -102,19 +102,3 @@ module.exports.rotateUA = () => {
   const randomUAIndex = Math.floor(Math.random() * userAgents.length);
   return userAgents[randomUAIndex];
 };
-
-/*
-Out of Scope
-https://scrapingant.com/proxies provides free proxies for connecting to the web.
-*/
-// module.exports.getProxyServer = async () => {
-//   const proxyServers = [
-//     "http://52.66.117.126:48759",
-//     "http://103.89.233.226:82",
-//     "http://13.127.90.57:7890",
-//     "http://103.89.233.226:83",
-//     "http://103.89.233.226:84",
-//     // Other proxy servers
-//   ];
-//   return proxyServers[Math.floor(Math.random() * proxyServers.length)];
-// };

@@ -9,6 +9,7 @@ if (!company) throw Error("Invalid args");
 const main = async (name) => {
   try {
     await db.connect();
+    // findOne to be replaced with a loop with findAll in case companies with same name are possible 
     let company = await db.models.company.findOne({
       where: { name },
       include: [{ model: db.models.execs }, { model: db.models.funds }],
@@ -28,15 +29,12 @@ const main = async (name) => {
     } else {
       // Updating company in case fields in model are updated in the future. Example: No of employees
       // await company.update({...fieldsToUpdate});
-
       // Check if new funding
       const fundsNotInDB = funding.filter(
         (obj) => !company.funds.some((key) => key.type === obj.type)
       );
       if (fundsNotInDB.length > 0)
-        await db.models.funds.bulkCreate(
-          fundsNotInDB.map((fund) => ({ ...fund, companyId: company.id }))
-        );
+        await db.models.funds.bulkCreate(fundsNotInDB.map((fund) => ({ ...fund, companyId: company.id })));
     }
     displayData(company, funding, execs);
   } catch (error) {
